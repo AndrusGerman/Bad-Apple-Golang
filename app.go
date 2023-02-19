@@ -2,29 +2,66 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
+
 	"os"
 	"os/exec"
 	"runtime"
+	"sync"
 	"time"
 )
 
+var framesChan = make(chan string, 1000)
+var wg = new(sync.WaitGroup)
+
 func main() {
-	for frame := 1; frame <= 5966; frame++ {
-		clear()           // solo limpia la pantalla
-		printFrame(frame) // que frame imprimir
-		time.Sleep(29 * time.Millisecond)
+	wg.Add(1)
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	// Load Frames
+	go LoadFrames()
+
+	go PrintFrames()
+
+	wg.Wait()
+}
+
+func PrintFrames() {
+	for frameContent := range framesChan {
+		clear()
+		printFrame(frameContent)
+		time.Sleep(30 * time.Millisecond)
+		wg.Done()
 	}
 }
 
-func printFrame(frame int) {
-	var fileName = fmt.Sprintf("res/BA%d.txt", frame) // con el frame crea una variable del nombre del archivo
-	var frameContent = getFrame(fileName)             // gurda el contenido del frame
-	fmt.Fprint(os.Stdout, frameContent)               // imprime en pantalla el frame
+func LoadFrames() {
+	for frame := 1; frame <= 5966; frame++ {
+		wg.Add(1)
+		var fileName = fmt.Sprintf("res/BA%d.txt", frame) // con el frame crea una variable del nombre del archivo
+		var frameContent = getFrameContent(fileName)
+		framesChan <- frameContent
+	}
+	wg.Done()
 }
 
-func getFrame(frameDir string) string {
-	fileRaw, _ := ioutil.ReadFile(frameDir) // lee el archivo
+func printFrame(frameContent string) {
+	fmt.Fprint(os.Stdout, frameContent) // imprime en pantalla el frame
+}
+
+func getFrameContent(frameDir string) string {
+	// Open File
+	file, err := os.Open(frameDir)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	// Read io.Reader
+	fileRaw, err := io.ReadAll(file)
+	if err != nil {
+		panic(err)
+	}
 	return string(fileRaw)
 }
 
@@ -35,8 +72,6 @@ func clear() {
 		cmd.Run()
 	}
 	if runtime.GOOS == "windos" {
-		cmd := exec.Command("cmd", "/c", "cls")
-		cmd.Stdout = os.Stdout
-		cmd.Run()
+		fmt.Print("\033[H\033[2J")
 	}
 }
