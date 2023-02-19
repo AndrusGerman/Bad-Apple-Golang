@@ -19,7 +19,7 @@ func main() {
 
 func printFrame(frame int) {
 	var fileName = fmt.Sprintf("res/BA%d.txt", frame) // con el frame crea una variable del nombre del archivo
-	var frameContent = getFrame(fileName)             // gurda el contenido del frame
+	var frameContent = getFrame(fileName)             // guarda el contenido del frame
 	fmt.Fprint(os.Stdout, frameContent)               // imprime en pantalla el frame
 }
 
