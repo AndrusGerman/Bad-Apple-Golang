@@ -35,6 +35,7 @@ func PrintFrames() {
 	}
 }
 
+<<<<<<< HEAD
 func LoadFrames() {
 	for frame := 1; frame <= 5966; frame++ {
 		wg.Add(1)
@@ -43,6 +44,12 @@ func LoadFrames() {
 		framesChan <- frameContent
 	}
 	wg.Done()
+=======
+func printFrame(frame int) {
+	var fileName = fmt.Sprintf("res/BA%d.txt", frame) // con el frame crea una variable del nombre del archivo
+	var frameContent = getFrame(fileName)             // guarda el contenido del frame
+	fmt.Fprint(os.Stdout, frameContent)               // imprime en pantalla el frame
+>>>>>>> 7cef677ee5722394003b56291b5240b9d6ad0840
 }
 
 func printFrame(frameContent string) {
