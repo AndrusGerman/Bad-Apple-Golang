@@ -30,7 +30,7 @@ func PrintFrames() {
 	for frameContent := range framesChan {
 		clear()
 		printFrame(frameContent)
-		time.Sleep(31 * time.Millisecond)
+		time.Sleep(time.Second / 60)
 		wg.Done()
 	}
 }
