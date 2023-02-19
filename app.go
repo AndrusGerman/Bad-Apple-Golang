@@ -30,26 +30,19 @@ func PrintFrames() {
 	for frameContent := range framesChan {
 		clear()
 		printFrame(frameContent)
-		time.Sleep(30 * time.Millisecond)
+		time.Sleep(31 * time.Millisecond)
 		wg.Done()
 	}
 }
 
-<<<<<<< HEAD
 func LoadFrames() {
-	for frame := 1; frame <= 5966; frame++ {
+	for frame := 1; frame <= 6569; frame++ {
 		wg.Add(1)
 		var fileName = fmt.Sprintf("res/BA%d.txt", frame) // con el frame crea una variable del nombre del archivo
 		var frameContent = getFrameContent(fileName)
 		framesChan <- frameContent
 	}
 	wg.Done()
-=======
-func printFrame(frame int) {
-	var fileName = fmt.Sprintf("res/BA%d.txt", frame) // con el frame crea una variable del nombre del archivo
-	var frameContent = getFrame(fileName)             // guarda el contenido del frame
-	fmt.Fprint(os.Stdout, frameContent)               // imprime en pantalla el frame
->>>>>>> 7cef677ee5722394003b56291b5240b9d6ad0840
 }
 
 func printFrame(frameContent string) {
